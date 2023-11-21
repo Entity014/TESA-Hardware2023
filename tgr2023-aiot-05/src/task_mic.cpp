@@ -1,6 +1,7 @@
 #include "main.h"
 #include "task_mic.h"
 #include "net_mqtt.h"
+#include <SimpleKalmanFilter.h>
 // constants
 #define TAG "task_mic"
 
@@ -23,13 +24,14 @@ void task_mic_init()
 // task function
 void task_mic_fcn(void *arg)
 {
+    SimpleKalmanFilter simpleKalmanFilter(2, 2, 0.01);
     static unsigned int num_samples = NUM_SAMPLES;
     static int32_t samples[NUM_SAMPLES]; // ? Array equal Pointer
     uint32_t prev_millis = millis();
     hw_mic_init(SAMPLE_RATE);
-    // float pre_sound = 0;
-    // bool once = true;
-    // bool onceT = true;
+    float pre_sound = 0;
+    bool once = true;
+    bool onceT = true;
     while (1)
     {
         // task function
@@ -50,41 +52,41 @@ void task_mic_fcn(void *arg)
             sample_avg += samples[i] / SCALE;
         }
         sound = (float)sample_avg / num_samples;
-        // Serial.println(num_samples);
-        ESP_LOGI(TAG, "test %f", sound);
-        // sound = simpleKalmanFilter.updateEstimate(abs(sound));
+        // ESP_LOGI(TAG, "test %d", sound);
+        sound = simpleKalmanFilter.updateEstimate(abs(sound));
+        // Serial.println(sound);
 
-        // if (sound > 0)
-        // {
-        //     if (once)
-        //     {
-        //         prev_millis = millis();
-        //         ESP_LOGI(TAG, "Start Ah");
-        //         evt_msg.timestamp = millis();
-        //         evt_msg.sound = true;
-        //         evt_msg.duration = duration_time;
-        //         once = false;
-        //         onceT = true;
-        //     }
-        // }
-        // else
-        // {
-        //     if (onceT)
-        //     {
-        //         duration_time = millis() - prev_millis;
-        //         once = true;
-        //         onceT = false;
-        //     }
-        //     if (duration_time != 0)
-        //     {
-        //         ESP_LOGI(TAG, "Stop Ah %d", duration_time);
-        //         evt_msg.timestamp = millis();
-        //         evt_msg.sound = false;
-        //         evt_msg.duration = duration_time;
-        //         pre_sound = sound;
-        //     }
-        // }
+        if (sound > 2)
+        {
+            if (once)
+            {
+                prev_millis = millis();
+                ESP_LOGI(TAG, "Start Ah");
+                evt_msg.timestamp = millis();
+                evt_msg.sound = true;
+                evt_msg.duration = duration_time;
+                once = false;
+                onceT = true;
+            }
+        }
+        else
+        {
+            if (onceT)
+            {
+                duration_time = millis() - prev_millis;
+                once = true;
+                onceT = false;
+            }
+            if (duration_time != 0)
+            {
+                ESP_LOGI(TAG, "Stop Ah %d", duration_time);
+                evt_msg.timestamp = millis();
+                evt_msg.sound = false;
+                evt_msg.duration = duration_time;
+                pre_sound = sound;
+            }
+        }
         xQueueSend(evt_queue, &evt_msg, portMAX_DELAY);
-        vTaskDelay(10 / portTICK_PERIOD_MS);
+        vTaskDelay(pdMS_TO_TICKS(1));
     }
 }
