@@ -1,6 +1,5 @@
 #include "main.h"
 #include "task_mic.h"
-// #include "task_period.h"
 #include "task_mqtt.h"
 #include "net_mqtt.h"
 
