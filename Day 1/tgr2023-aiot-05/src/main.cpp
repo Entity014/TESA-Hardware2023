@@ -36,7 +36,7 @@ void setup()
 // Main loop
 void loop()
 {
-  // net_mqtt_loop();
+  net_mqtt_loop();
   delay(100);
 }
 

@@ -169,7 +169,7 @@ void ei_use_result(ei_impulse_result_t result)
   }
   if (foundT)
   {
-    if (y0 < y1)
+    if (arr[0].y < arr[1].y)
     {
       ESP_LOGI(TAG, "%s up , %s low", arr[0].label, arr[1].label);
     }
