@@ -12,7 +12,7 @@ void print_memory(void);
 static void mqtt_callback(char *topic, byte *payload, unsigned int length);
 
 // static variables
-bool enable_flag = true;
+bool enable_flag = false;
 
 StaticJsonDocument<128> cmd_doc;
 
@@ -24,6 +24,16 @@ QueueHandle_t evt_queue;
 void setup()
 {
   Serial.begin(115200);
+
+  pinMode(0, INPUT_PULLUP);
+  while (1)
+  {
+    if (digitalRead(0) == LOW)
+      break;
+    Serial.print("?");
+    delay(20);
+  }
+
   print_memory();
   evt_queue = xQueueCreate(3, sizeof(evt_msg_t));
   task_button_init();

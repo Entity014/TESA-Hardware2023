@@ -16,7 +16,7 @@
 
 #define WIFI_SSID "Xerophytes"
 #define WIFI_PASSWORD "12345678"
-#define MQTT_EVT_TOPIC "tgr2023/reai-cmu-manatee/btn_evt"
+#define MQTT_EVT_TOPIC "tgr2023/reai-cmu-manatee/water_evt"
 #define MQTT_CMD_TOPIC "tgr2023/reai-cmu-manatee/cmd"
 #define MQTT_DEV_ID 28
 
@@ -36,16 +36,12 @@ typedef struct evt_msg_t
 {
     int type;
     uint32_t timestamp;
-    String label;
-    uint32_t x;
-    uint32_t y;
-    uint32_t width;
-    uint32_t height;
     float value;
 } evt_msg_t;
 
 // shared variables
 extern xQueueHandle evt_queue;
+extern bool capture_enabled;
 
 // public function prototypes
 

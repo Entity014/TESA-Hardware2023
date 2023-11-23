@@ -11,6 +11,7 @@ static void mqtt_callback(char *topic, byte *payload, unsigned int length);
 
 // static variables
 StaticJsonDocument<128> cmd_doc;
+bool capture_enabled = false;
 
 static char cmd_buf[128];
 
@@ -50,17 +51,17 @@ void mqtt_callback(char *topic, byte *payload, unsigned int length)
   memcpy(cmd_buf, payload, length);
   cmd_buf[length] = '\0';
   deserializeJson(cmd_doc, cmd_buf);
-  // if (cmd_doc["ID"] == MQTT_DEV_ID)
-  // {
-  //   if (cmd_doc["sound"] == true)
-  //   {
-  //     enable_flag = true;
-  //     // ESP_LOGI(TAG, "Got enable command");
-  //   }
-  //   else
-  //   {
-  //     enable_flag = false;
-  //     // ESP_LOGI(TAG, "Got disable command");
-  //   }
-  // }
+  if (cmd_doc["ID"] == MQTT_DEV_ID)
+  {
+    if (cmd_doc["cap"] == true)
+    {
+      capture_enabled = true;
+      // ESP_LOGI(TAG, "Got enable command");
+    }
+    else
+    {
+      capture_enabled = false;
+      // ESP_LOGI(TAG, "Got disable command");
+    }
+  }
 }

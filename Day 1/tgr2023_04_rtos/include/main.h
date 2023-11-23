@@ -16,9 +16,9 @@
 #define TASK_BUTTON_TYPE 0
 #define TASK_PERIOD_TYPE 1
 
-#define WIFI_SSID "Xerophytes"
-#define WIFI_PASSWORD "12345678"
-#define MQTT_EVT_TOPIC "tgr2023/reai-cmu-manatee/btn_evt"
+#define WIFI_SSID "TGR17_2.4G"
+#define WIFI_PASSWORD ""
+#define MQTT_EVT_TOPIC "tgr2023/reai-cmu-manatee/water_evt"
 #define MQTT_CMD_TOPIC "tgr2023/reai-cmu-manatee/cmd"
 #define MQTT_DEV_ID 28
 

@@ -44,11 +44,6 @@ void task_mqtt_fcn(void *arg)
         case TASK_CAMERA_TYPE:
             evt_doc["ID"] = MQTT_DEV_ID;
             evt_doc["timestamp"] = evt_msg.timestamp;
-            evt_doc["label"] = evt_msg.label;
-            evt_doc["x"] = evt_msg.x;
-            evt_doc["y"] = evt_msg.y;
-            evt_doc["width"] = evt_msg.width;
-            evt_doc["height"] = evt_msg.height;
             evt_doc["predict"] = evt_msg.value;
             serializeJson(evt_doc, evt_buf);
             break;
