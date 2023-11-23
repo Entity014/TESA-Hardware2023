@@ -37,7 +37,6 @@ class EspCamWidget(QtWidgets.QWidget):
             port for (port, desc, hwid) in serial.tools.list_ports.comports()
         ]
         self.populate_ui()
-        self.frame = np.array([])
         self.index = 0
 
     def populate_ui(self):
@@ -75,8 +74,7 @@ class EspCamWidget(QtWidgets.QWidget):
         self.ctrl_layout.addRow("Label", self.label_txt)
 
         self.label_button = QtWidgets.QPushButton("Save")
-        self.label_button.clicked.connect(self.upload_data)
-        # self.label_button.clicked.connect(self.save_data)
+        self.label_button.clicked.connect(self.save_image)
         self.ctrl_layout.addRow(self.label_button)
 
     def connect_esp32(self):
@@ -107,7 +105,6 @@ class EspCamWidget(QtWidgets.QWidget):
 
     def update_image(self, img):
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        self.frame = img.copy()
         h, w, c = img.shape
         img = QtGui.QImage(img.data, w, h, QtGui.QImage.Format_RGB888)
         self.preview_img.setPixmap(QPixmap(img))
@@ -167,16 +164,17 @@ class EspCamWidget(QtWidgets.QWidget):
         )
         print("Uploaded file(s) to Edge Impulse\n", res.status_code, res.content)
 
-    def save_data(self):
-        save_dir = "/home/entity014/TESA 2023/tgr2023_06_imglabel/img/"
-        os.makedirs(save_dir, exist_ok=True)
-        cv2.imwrite(
-            f"{save_dir}{self.index}.jpeg",
-            self.frame,
-        )
-        print(f"/home/entity014/TESA 2023/tgr2023_06_imglabel/img/{self.index}.jpeg")
-        print(f"Image saved successfully. {self.index}")
-        self.index += 1
+    def save_image(self):
+        if hasattr(self, "img"):
+            file_path = f"/home/entity014/TESA 2023/Day 2/tgr2023_06_imglabel/img/{self.index}.jpg"
+
+            # Ensure the file path has the correct extension
+            if not file_path.lower().endswith((".jpg", ".jpeg")):
+                file_path += ".jpg"
+
+            cv2.imwrite(file_path, self.img)
+            print(f"Image saved to: {file_path}")
+            self.index += 1
 
 
 if __name__ == "__main__":
