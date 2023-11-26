@@ -33,10 +33,12 @@ void task_button_fcn(void *arg)
     {
         // task function
         evt_msg_t evt_msg = {
-            .type = TASK_BUTTON_TYPE,
-            .timestamp = 0,
+            .type = TASK_PERIOD_TYPE,
+            .date = 0,
+            .timestamp = millis(),
             .pressed = false,
-            .value = 0};
+            .value = esp_random(),
+            .qub = 0};
         if (!enable_flag)
         {
             if (digitalRead(BTN_PIN) == LOW)

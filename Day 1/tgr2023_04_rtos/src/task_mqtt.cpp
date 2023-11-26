@@ -31,13 +31,13 @@ void task_mqtt_fcn(void *arg)
 {
     // task initialization
     net_mqtt_init(WIFI_SSID, WIFI_PASSWORD);
-    net_mqtt_connect(MQTT_DEV_ID, MQTT_EVT_TOPIC, (mqtt_callback_t)arg);
+    net_mqtt_connect(MQTT_DEV_ID, MQTT_CMD_TOPIC, (mqtt_callback_t)arg);
     while (1)
     {
         static evt_msg_t evt_msg;
         // task function
         xQueueReceive(evt_queue, &evt_msg, portMAX_DELAY);
-        ESP_LOGI(TAG, "task_mqtt run at %d", millis());
+        // ESP_LOGI(TAG, "task_mqtt run at %d", millis());
         evt_doc.clear();
         switch (evt_msg.type)
         {
@@ -49,8 +49,10 @@ void task_mqtt_fcn(void *arg)
             break;
         case TASK_PERIOD_TYPE:
             evt_doc["ID"] = MQTT_DEV_ID;
+            evt_doc["date"] = evt_msg.date;
             evt_doc["timestamp"] = evt_msg.timestamp;
             evt_doc["value"] = evt_msg.value;
+            evt_doc["qub"] = evt_msg.qub;
             serializeJson(evt_doc, evt_buf);
             break;
         default:

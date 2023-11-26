@@ -26,9 +26,11 @@
 typedef struct evt_msg_t
 {
     int type;
+    int date;
     uint32_t timestamp;
     bool pressed;
-    uint32_t value;
+    float value;
+    float qub;
 } evt_msg_t;
 
 // shared variables

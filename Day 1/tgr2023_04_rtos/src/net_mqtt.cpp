@@ -12,7 +12,7 @@
 static WiFiClient wifi_client;
 static PubSubClient mqtt_client(wifi_client);
 static IPAddress staticIP(192, 168, 1, 91);
-static IPAddress gateway(192, 168, 1, 1);
+static IPAddress gateway(0, 0, 0, 0);
 static IPAddress subnet(255, 255, 255, 0);
 
 // connect WiFi and MQTT broker
@@ -28,7 +28,7 @@ void net_mqtt_init(char *ssid, char *passwd)
     WiFi.begin(ssid, passwd);
     while (WiFi.status() != WL_CONNECTED)
     {
-        delay(10);
+        vTaskDelay(pdMS_TO_TICKS(10));
     }
     ESP_LOGI(TAG, "Connected to %s", ssid);
 

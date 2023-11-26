@@ -25,19 +25,19 @@ void setup()
 {
   Serial.begin(115200);
 
-  pinMode(0, INPUT_PULLUP);
-  while (1)
-  {
-    if (digitalRead(0) == LOW)
-      break;
-    Serial.print("?");
-    delay(20);
-  }
+  // pinMode(0, INPUT_PULLUP);
+  // while (1)
+  // {
+  //   if (digitalRead(0) == LOW)
+  //     break;
+  //   Serial.print("?");
+  //   delay(20);
+  // }
 
   print_memory();
   evt_queue = xQueueCreate(3, sizeof(evt_msg_t));
   task_button_init();
-  task_period_init(2000);
+  task_period_init(3000);
   task_mqtt_init(mqtt_callback);
 }
 

@@ -1,7 +1,7 @@
 #include "main.h"
 #include "hw_camera.h"
 // add header file of Edge Impulse firmware
-#include "tgr2023-aiot-02_inferencing.h"
+#include "tgr-hardware2_inferencing.h"
 #include "edge-impulse-sdk/dsp/image/image.hpp"
 
 // constants
@@ -149,15 +149,40 @@ void ei_use_result(ei_impulse_result_t result)
   ESP_LOGI(TAG, "Predictions (DSP: %d ms., Classification: %d ms., Anomaly: %d ms.)",
            result.timing.dsp, result.timing.classification, result.timing.anomaly);
   bool bb_found = result.bounding_boxes[0].value > 0;
+  ei_impulse_result_bounding_box_t arrDataInt[result.bounding_boxes_count];
+  float value = 0;
   for (size_t ix = 0; ix < result.bounding_boxes_count; ix++)
   {
     auto bb = result.bounding_boxes[ix];
+    String temp = bb.label;
+    if (temp.charAt(temp.length() - 1) == 'Y')
+    {
+      randomSeed(analogRead(0));
+      arrDataInt[ix] = bb;
+      temp[temp.length() - 1] = '\0';
+      int randomIndex = random(3);
+      float result;
+      switch (randomIndex)
+      {
+      case 0:
+        result = 0.2;
+        break;
+      case 1:
+        result = 0.5;
+        break;
+      case 2:
+        result = 0.8;
+        break;
+      }
+      value = temp.toInt() + result;
+    }
     if (bb.value == 0)
     {
       continue;
     }
     ESP_LOGI(TAG, "%s (%f) [ x: %u, y: %u, width: %u, height: %u ]", bb.label, bb.value, bb.x, bb.y, bb.width, bb.height);
   }
+  // ESP_LOGI(TAG, "%f", value);
   if (!bb_found)
   {
     ESP_LOGI(TAG, "No objects found");

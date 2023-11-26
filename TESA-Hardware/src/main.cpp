@@ -56,7 +56,7 @@ void mqtt_callback(char *topic, byte *payload, unsigned int length)
     if (cmd_doc["cap"] == true)
     {
       capture_enabled = true;
-      // ESP_LOGI(TAG, "Got enable command");
+      ESP_LOGI(TAG, "Capture by MQTT");
     }
     else
     {
